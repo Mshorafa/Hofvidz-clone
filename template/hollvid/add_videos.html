@@ -28,25 +28,16 @@
         {% endfor %}
         </form>
         <div id="search_reuslts">
-            {% with ids=" " %}
-                <span class="hidden" style="display: none">{{ ids }}</span>
-                <span class="loading"></span>
-                <div id="map" class="row">
-                {% if ids %}
-                    {% for foo in ids|make_list %}
-                    ok
-                    {% endfor %}
+            <div id="maps" class="row">
 
-                {% endif %} 
-                </div>
-            {% endwith %}
+            </div>
 
         </div>
         <script>
             var delayTimer ;
             $('#id_search_tram').keyup(function (){
                 clearTimeout(delayTimer);
-                $('.loading').text('Loading...');
+                $('#maps').text('Loading...');
                 delayTimer = setTimeout(function (){
                     var  text = $('#id_search_tram').val();
                     $.ajax({
@@ -56,27 +47,19 @@
                         },
                         dataType:'json',
                         success:function (data){
-                            resalt = [];
-                            $('.loading').text("")
-
+                            resalt = '';
+                            $('#maps').text("")
                             data['items'].forEach(function (vidose){
-                                {#resalt += vidose["id"]["videoId"]#}
-                                {#$('#map').append(#}
-                                {#    `<div class="col-md-4 mt-3"> <div class="card mb-4 shadow-sm"><iframe width="100%" height="255" src="https://www.youtube.com/embed/${vidose["id"]["videoId"]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>`#}
-                                {#);#}
-                                if (["id"]["videoId"] != 'undefined'){
-                                    resalt.push(vidose["id"]["videoId"])
-                                };
+                                resalt+=`<div class="col-md-4 mt-3"><div class="card mb-4 shadow-sm"><iframe width="100%" height="255" src="https://www.youtube.com/embed/${vidose['id']['videoId']}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>`;
 
                             });
-                            console.log(resalt)
-                            $('.hidden').append(resalt)
+                            $('#maps').append(resalt)
                         }
                     });
                 },1000)
             });
         </script>
-    </d iv>
+    </div>
     </div>
 
 {% endblock %}
