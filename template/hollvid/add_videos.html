@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="container">
+    <h2>Add vidoes {{ hall.title }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% include "portion/_alert.html" %}
+            {% for field in form %}
+             <div class="form-group" {% if form.errors %}alert alert-danger {% endif %} >
+             {{ field.errors }}
+             {{ field.label_tag }}
+             {% render_field field class='form-control' %}
+             </div>
+        {% endfor %}
+            <button type="submit" class="btn btn-primary"> Add vidoes</button>
+        </form>
+        <br>
+    <h2>Or</h2>
+        <form method="post">
+            {% for field in search_form %}
+             <div class="form-group" {% if form.errors %}alert alert-danger {% endif %} >
+             {{ field.errors }}
+             {{ field.label_tag }}
+             {% render_field field class='form-control' %}
+             </div>
+        {% endfor %}
+        </form>
+        <div id="search_reuslts">
+            {% with ids=" " %}
+                <span class="hidden" style="display: none">{{ ids }}</span>
+                <span class="loading"></span>
+                <div id="map" class="row">
+                {% if ids %}
+                    {% for foo in ids|make_list %}
+                    ok
+                    {% endfor %}
+
+                {% endif %} 
+                </div>
+            {% endwith %}
+
+        </div>
+        <script>
+            var delayTimer ;
+            $('#id_search_tram').keyup(function (){
+                clearTimeout(delayTimer);
+                $('.loading').text('Loading...');
+                delayTimer = setTimeout(function (){
+                    var  text = $('#id_search_tram').val();
+                    $.ajax({
+                        url : '{% url 'HollsVid:search_videos' %}',
+                        data : {
+                            'search_tram':text
+                        },
+                        dataType:'json',
+                        success:function (data){
+                            resalt = [];
+                            $('.loading').text("")
+
+                            data['items'].forEach(function (vidose){
+                                {#resalt += vidose["id"]["videoId"]#}
+                                {#$('#map').append(#}
+                                {#    `<div class="col-md-4 mt-3"> <div class="card mb-4 shadow-sm"><iframe width="100%" height="255" src="https://www.youtube.com/embed/${vidose["id"]["videoId"]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>`#}
+                                {#);#}
+                                if (["id"]["videoId"] != 'undefined'){
+                                    resalt.push(vidose["id"]["videoId"])
+                                };
+
+                            });
+                            console.log(resalt)
+                            $('.hidden').append(resalt)
+                        }
+                    });
+                },1000)
+            });
+        </script>
+    </d iv>
+    </div>
+
+{% endblock %}
